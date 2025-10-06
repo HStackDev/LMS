@@ -81,18 +81,14 @@ The Library Management System (LMS) automates book, member, and borrowing/return
 
 ### 6. Use Case Diagram (Text Version)
 
-```
-Actors:
-- Admin
-- User
-Use Cases:
-- Admin: Add/Edit/Delete/View Books, Add/Edit/Delete/View Members, Borrow/Return Books, Generate Reports
-- User: Search Books, View Borrowing History
-```
+<img src="https://raw.githubusercontent.com/HStackDev/LMS/refs/heads/main/srs_m/usecase.png">
 
-### 7. MongoDB Schema Diagram
+### 7. MongoDB collections
+- books
+- borrow_records
+- borrow_requests
+- users
 
-<img src="">
 
 ---
 
