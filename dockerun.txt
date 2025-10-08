@@ -1,0 +1,6 @@
+docker run -p 27017:27017 mongo-lms:latest 
+
+docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' LMS-mongo
+
+
+docker run -p 4040:80 backend-lms:latest sh -c "cd /app && python3 run.py"
