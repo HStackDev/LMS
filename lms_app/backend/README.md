@@ -48,9 +48,26 @@ venv\Scripts\activate
 pip install -r backend/requirements.txt
 ```
 
+- **Environment Setup**
+```
+touch .env
+nano .env
+
+# Server port
+PORT=4040
+
+# MongoDB connection string
+DB=mongodb://localhost:27017/lms
+
+# Secret key for your app (JWT, sessions, etc.)
+SECRET_KEY=supersecretkey
+```
+
 ---
 
-##  Run the Server
+
+
+5. ##  Run the Server
 
 ```
 python run.py
