@@ -1,9 +1,14 @@
+import os
 from flask import Blueprint, request, jsonify
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from datetime import datetime
+from flask import send_from_directory
 from bson import ObjectId
 from src.db.mongo_connection import mongo
+
+
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../frontend/html"))
 
 user_bp = Blueprint("user_bp", __name__)
 
@@ -66,9 +71,9 @@ def login():
 
     # Determine dashboard route based on role
     if user["role"] == "admin":
-        dashboard_url = "/admin-dashboard"
+        dashboard_url = "/api/users/admin-dashboard"
     else:
-        dashboard_url = "/dashboard"
+        dashboard_url = "/api/users/dashboard"
 
     return jsonify({
         "message": "Login successful",
@@ -78,10 +83,6 @@ def login():
     }), 200
 
 
-
-# ---------------------------
-# ADMIN DASHBOARD
-# ---------------------------
 @user_bp.route("/admin-dashboard", methods=["GET"])
 @jwt_required()
 def admin_dashboard():
@@ -91,12 +92,9 @@ def admin_dashboard():
     if not user or user["role"] != "admin":
         return jsonify({"error": "Access denied"}), 403
 
-    return jsonify({"message": "Welcome to Admin Dashboard"}), 200
+    return send_from_directory(BASE_DIR, "admin-dashboard.html")
 
 
-# ---------------------------
-# USER DASHBOARD
-# ---------------------------
 @user_bp.route("/dashboard", methods=["GET"])
 @jwt_required()
 def user_dashboard():
@@ -106,4 +104,4 @@ def user_dashboard():
     if not user or user["role"] != "user":
         return jsonify({"error": "Access denied"}), 403
 
-    return jsonify({"message": "Welcome to User Dashboard"}), 200
+    return send_from_directory(BASE_DIR, "dashboard.html")

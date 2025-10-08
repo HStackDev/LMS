@@ -114,27 +114,55 @@ def admin_get_all_borrows():
     if not is_admin(current_user_id):
         return jsonify({"error": "Access denied"}), 403
 
+    # Helper to get book info
+    def get_book_info(book_id):
+        book = mongo.db.books.find_one({"_id": ObjectId(book_id)})
+        if book:
+            return {
+                "title": book.get("title", "Unknown"),
+                "available": book.get("available_copies", 0)
+            }
+        return {"title": "Unknown", "available": 0}
+
+    # Helper to get username
+    def get_username(user_id):
+        user = mongo.db.users.find_one({"_id": ObjectId(user_id)})
+        if user:
+            return user.get("username", "Unknown")
+        return "Unknown"
+
     # Requested books
     requested = list(mongo.db.borrow_requests.find({}))
     for r in requested:
         r["_id"] = str(r["_id"])
         r["book_id"] = str(r["book_id"])
         r["user_id"] = str(r["user_id"])
+        book_info = get_book_info(r["book_id"])
+        r["book_name"] = book_info["title"]
+        r["available_quantity"] = book_info["available"]
+        r["username"] = get_username(r["user_id"])
 
-    #  Currently borrowed books
+    # Currently borrowed books
     borrowed = list(mongo.db.borrow_records.find({"status": "borrowed"}))
     for b in borrowed:
         b["_id"] = str(b["_id"])
         b["book_id"] = str(b["book_id"])
         b["member_id"] = str(b["member_id"])
+        book_info = get_book_info(b["book_id"])
+        b["book_name"] = book_info["title"]
+        b["available_quantity"] = book_info["available"]
+        b["username"] = get_username(b["member_id"])
 
-    #  Returned books
+    # Returned books
     returned = list(mongo.db.borrow_records.find({"status": "returned"}))
     for r in returned:
         r["_id"] = str(r["_id"])
         r["book_id"] = str(r["book_id"])
         r["member_id"] = str(r["member_id"])
-        # return_date is included
+        book_info = get_book_info(r["book_id"])
+        r["book_name"] = book_info["title"]
+        r["available_quantity"] = book_info["available"]
+        r["username"] = get_username(r["member_id"])
 
     return jsonify({
         "requested": requested,

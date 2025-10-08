@@ -6,9 +6,16 @@ from src.modules.admin_routes import admin_bp
 from src.modules.book_module import book_bp
 from src.modules.borrow_module import borrow_bp
 from src.modules.search_module import search_bp
+from flask_cors import CORS
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 def create_app():
     app = Flask(__name__)
+
+    CORS(app)
 
     # Initialize MongoDB and JWT
     init_db(app)
@@ -23,5 +30,13 @@ def create_app():
     app.register_blueprint(borrow_bp, url_prefix="/api/borrow")
 
     app.register_blueprint(search_bp, url_prefix="/api")
+    
+    # Global error handler
+    @app.errorhandler(Exception)
+    def handle_exception(e):
+        import traceback
+        print("Unhandled error:", str(e))
+        traceback.print_exc()
+        return {"error": "Something went wrong"}, 500
     
     return app
