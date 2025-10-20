@@ -132,7 +132,7 @@ def admin_get_all_borrows():
         return "Unknown"
 
     # Requested books
-    requested = list(mongo.db.borrow_requests.find({}))
+    requested = list(mongo.db.borrow_requests.find({"status": "pending"}))
     for r in requested:
         r["_id"] = str(r["_id"])
         r["book_id"] = str(r["book_id"])

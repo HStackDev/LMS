@@ -14,7 +14,7 @@
             localStorage.removeItem("base_url");
 
             // Redirect to backend login route
-            window.location.href = `auth.html`;
+            window.location.href = `/`;
         }
 
         async function safeParseJson(res) {

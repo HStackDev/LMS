@@ -133,9 +133,9 @@ async function login() {
 
       // Redirect based on role
       if (data.role === 'admin') {
-        window.location.href = '../html/admin-dashboard.html';
+        window.location.href = '/';
       } else {
-        window.location.href = '../html/dashboard.html';
+        window.location.href = '/';
       }
 
     } else {

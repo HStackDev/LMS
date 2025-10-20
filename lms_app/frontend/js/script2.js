@@ -12,7 +12,7 @@ function logout() {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
     localStorage.removeItem("base_url");
-    window.location.href = "auth.html";
+    window.location.href = "/";
 }
 
 function showTab(tab) {
@@ -163,12 +163,28 @@ async function deleteUser() {
 
 // ===== BOOKS =====
 async function createBook() {
-    const fields = ["title", "author", "isbn", "category", "quantity"];
-    const values = Object.fromEntries(fields.map(f => [f, document.getElementById("book-" + f).value.trim()]));
+    const fields = ["title", "author", "isbn", "category", "available_copies"];
     const msg = document.getElementById("book-msg");
+
+    const values = {};
+    for (const f of fields) {
+        const el = document.getElementById("book-" + f);
+        if (!el) {
+            msg.textContent = `Input for ${f} not found`;
+            return;
+        }
+        values[f] = el.value.trim();
+    }
 
     if (Object.values(values).some(v => !v)) {
         msg.textContent = "All fields required";
+        return;
+    }
+
+    // Convert available_copies to number
+    values.available_copies = parseInt(values.available_copies, 10);
+    if (isNaN(values.available_copies)) {
+        msg.textContent = "available_copies must be a number";
         return;
     }
 
@@ -184,21 +200,20 @@ async function createBook() {
             body: JSON.stringify(values)
         });
 
-        const data = await safeParseJson(res);
+        const data = await res.json().catch(() => ({}));
+
         if (res.ok) {
             msg.textContent = "Book added successfully";
-            // 🧹 Clear form inputs
             fields.forEach(f => document.getElementById("book-" + f).value = "");
-            // 🔄 Auto refresh book list
-            await getBooks();
+            if (typeof getBooks === "function") await getBooks();
         } else {
             msg.textContent = data.error || JSON.stringify(data);
         }
-
     } catch (e) {
         msg.textContent = e.message;
     }
 }
+
 
 let allBooks = []; // cache to hold all books
 
