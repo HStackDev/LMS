@@ -17,6 +17,11 @@ def add_book():
     if not all([data.get("title"), data.get("author"), data.get("isbn")]):
         return jsonify({"error": "Missing required fields"}), 400
 
+    try:
+        data["available_copies"] = int(data.get("available_copies", 1))
+    except ValueError:
+        return jsonify({"error": "available_copies must be a number"}), 400
+
     new_book = create_book(data, current_user_id)
     mongo.db.books.insert_one(new_book)
     return jsonify({"message": "Book added successfully"}), 201

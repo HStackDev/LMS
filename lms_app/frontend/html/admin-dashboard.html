@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Admin Dashboard</title>
     <link rel="stylesheet" href="../css/admin-dashboard.css">
+    <script src="../js/auth-check.js"></script>
 </head>
 
 <body>
@@ -61,7 +62,7 @@
             <input id="book-author" type="text" placeholder="Author">
             <input id="book-isbn" type="text" placeholder="ISBN">
             <input id="book-category" type="text" placeholder="Category">
-            <input id="book-quantity" type="number" placeholder="Quantity">
+            <input id="book-available_copies" type="number" placeholder="Quantity">
             <button onclick="createBook()">Add Book</button>
             <button onclick="getBooks()">View All Books</button>
         </div>
